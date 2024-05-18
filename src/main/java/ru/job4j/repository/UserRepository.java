@@ -6,11 +6,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import ru.job4j.model.User;
 
-import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 @AllArgsConstructor
 public class UserRepository {
@@ -43,12 +41,6 @@ public class UserRepository {
         try {
             session.beginTransaction();
             session.update(user);
-//            session.createQuery(
-//                            "UPDATE auto_user SET login = :fLogin, password = :fPassword WHERE id = :fId")
-//                    .setParameter("fLogin", user.getLogin())
-//                    .setParameter("fPassword", user.getPassword())
-//                    .setParameter("fId", user.getId())
-//                    .executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
