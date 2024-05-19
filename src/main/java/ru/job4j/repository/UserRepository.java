@@ -27,8 +27,9 @@ public class UserRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
         return user;
     }
 
@@ -44,8 +45,9 @@ public class UserRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
     }
 
     /**
@@ -63,8 +65,9 @@ public class UserRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
     }
 
     /**
@@ -82,8 +85,9 @@ public class UserRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
         return answer;
     }
 
@@ -92,21 +96,22 @@ public class UserRepository {
      * @return пользователь.
      */
     public Optional<User> findById(int userId) {
-        List<User> answer = null;
+        Optional<User> answer = Optional.empty();
         Session session = sf.openSession();
         try {
             session.beginTransaction();
-            Query<User> query = session.createQuery(
-                    "from User where id = :fId", User.class);
-            query.setParameter("fId", userId);
-            answer = query.getResultList();
+            answer = session.createQuery(
+                    "from User where id = :fId", User.class)
+                    .setParameter("fId", userId)
+                    .uniqueResultOptional();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
             System.out.println(e.getMessage());
+        } finally {
+            session.close();
         }
-        session.close();
-        return Optional.ofNullable(answer.isEmpty() ? null : answer.get(0));
+        return answer;
     }
 
     /**
@@ -126,8 +131,9 @@ public class UserRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
         return answer;
     }
 
@@ -137,19 +143,20 @@ public class UserRepository {
      * @return Optional or user.
      */
     public Optional<User> findByLogin(String login) {
-        List<User> answer = new LinkedList<>();
+        Optional<User> answer = Optional.empty();
         Session session = sf.openSession();
         try {
             session.beginTransaction();
-            Query<User> query = session.createQuery(
-                    "from User where login = :fLogin", User.class);
-            query.setParameter("fLogin", login);
-            answer = query.getResultList();
+            answer = session.createQuery(
+                    "from User where login = :fLogin", User.class)
+                    .setParameter("fLogin", login)
+                    .uniqueResultOptional();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
-        return Optional.ofNullable(answer.isEmpty() ? null : answer.get(0));
+        return answer;
     }
 }
