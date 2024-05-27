@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "j_user_notification")
+@Table(name = "price_history")
 public class PriceHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,5 +22,5 @@ public class PriceHistory {
 
     private long after;
 
-    private LocalDateTime created;
+    private LocalDateTime created = LocalDateTime.now();
 }

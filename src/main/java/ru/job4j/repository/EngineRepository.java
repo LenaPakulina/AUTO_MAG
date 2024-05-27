@@ -1,0 +1,13 @@
+package ru.job4j.repository;
+
+import ru.job4j.model.Car;
+import ru.job4j.model.Engine;
+
+import java.util.Collection;
+import java.util.Optional;
+
+public interface EngineRepository {
+    Optional<Engine> findById(int id);
+
+    Collection<Engine> findAll();
+}

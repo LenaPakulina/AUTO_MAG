@@ -1,9 +1,10 @@
-package ru.job4j.repository;
+package ru.job4j.repository.utils;
 
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@Component
 @AllArgsConstructor
 public class CrudRepository {
     private final SessionFactory sf;
@@ -23,16 +25,20 @@ public class CrudRepository {
         );
     }
 
-    public void run(String query, Map<String, Object> args) {
-        Consumer<Session> command = session -> {
+    public boolean runFunction(Function<Session, Boolean> function) {
+        return tx(function);
+    }
+
+    public boolean runWithResult(String query, Map<String, Object> args) {
+        Function<Session, Boolean> command = session -> {
             var sq = session
                     .createQuery(query);
             for (Map.Entry<String, Object> arg : args.entrySet()) {
                 sq.setParameter(arg.getKey(), arg.getValue());
             }
-            sq.executeUpdate();
+            return sq.executeUpdate() > 0;
         };
-        run(command);
+        return tx(command);
     }
 
     public <T> Optional<T> optional(String query, Class<T> cl, Map<String, Object> args) {
