@@ -10,6 +10,8 @@ import java.util.Set;
 @Entity
 @Table(name = "owners")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Owner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

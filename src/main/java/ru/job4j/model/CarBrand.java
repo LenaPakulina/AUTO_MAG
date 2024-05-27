@@ -7,21 +7,17 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "auto_users")
 @Data
+@Entity
+@Table(name = "car_brands")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class CarBrand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private int id;
 
-    private String login;
-
-    private String password;
-
-    @Column(name = "user_zone")
-    private String timezoneID;
+    private String name;
 }

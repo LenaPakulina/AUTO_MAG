@@ -7,21 +7,22 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "auto_users")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity
+@Table(name = "files")
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private int id;
 
-    private String login;
+    private String name;
 
-    private String password;
+    private String path;
 
-    @Column(name = "user_zone")
-    private String timezoneID;
+    @Column(name = "post_id")
+    private int postId;
 }

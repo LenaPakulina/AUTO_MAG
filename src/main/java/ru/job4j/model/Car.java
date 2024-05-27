@@ -1,7 +1,9 @@
 package ru.job4j.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +16,8 @@ import java.util.Set;
 @Entity
 @Table(name = "cars")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +27,10 @@ public class Car {
     private String name;
 
     private LocalDateTime ownershipAt = LocalDateTime.now();
+
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    private CarBrand brand;
 
     @ManyToOne
     @JoinColumn(name = "engine_id")

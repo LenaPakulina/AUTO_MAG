@@ -1,0 +1,1 @@
+ALTER TABLE cars ADD brand_id int NOT NULL REFERENCES car_brands(id);

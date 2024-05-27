@@ -1,12 +1,17 @@
 package ru.job4j.repository.implementation;
 
 import lombok.AllArgsConstructor;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.springframework.stereotype.Repository;
 import ru.job4j.model.Car;
 import ru.job4j.model.Post;
 import ru.job4j.repository.PostRepository;
 import ru.job4j.repository.utils.CrudRepository;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -43,5 +48,50 @@ public class SimplePostRepository implements PostRepository {
     @Override
     public Collection<Post> findAll() {
         return crudRepository.query("from Post ORDER BY id ASC", Post.class);
+    }
+
+    @Override
+    public Collection<Post> findPostsToday() {
+        return crudRepository.query("from Post p WHERE DATE(p.created) = :fDate",
+                Post.class,
+                Map.of("fDate", LocalDate.now()));
+    }
+
+    @Override
+    public Collection<Post> findPostsWithPhoto() {
+        return crudRepository.query("""
+            SELECT DISTINCT p 
+            FROM Post p 
+            LEFT JOIN File f ON p.id = f.postId
+            ORDER BY p.id ASC
+        """, Post.class);
+    }
+
+    @Override
+    public Collection<Post> findPostsOfCarBrand(int brandId) {
+        return crudRepository.query("""
+            SELECT DISTINCT p
+            from Post p 
+            JOIN Car c ON p.car.id =  c.id
+            WHERE c.brand.id = :fBrandId
+            ORDER BY p.id ASC
+        """, Post.class, Map.of("fBrandId", brandId));
+    }
+
+    public static void main(String[] args) {
+        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .configure().build();
+        try {
+            SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+            CrudRepository crudRepository1 = new CrudRepository(sf);
+            SimplePostRepository simplePostRepository = new SimplePostRepository(crudRepository1);
+            System.out.println(simplePostRepository.findPostsToday());
+            System.out.println(simplePostRepository.findPostsWithPhoto());
+            System.out.println(simplePostRepository.findPostsOfCarBrand(10));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            StandardServiceRegistryBuilder.destroy(registry);
+        }
     }
 }

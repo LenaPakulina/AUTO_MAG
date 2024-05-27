@@ -5,7 +5,7 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://127.0.0.1:5432/wizard_cars</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://127.0.0.1:5432/cars</property>
         <property name="hibernate.connection.username">postgres</property>
         <property name="hibernate.connection.password">password</property>
         <property name="hibernate.connection.pool_size">1</property>
@@ -20,5 +20,7 @@
         <mapping class="ru.job4j.model.Engine" />
         <mapping class="ru.job4j.model.Car" />
         <mapping class="ru.job4j.model.HistoryOwner" />
+        <mapping class="ru.job4j.model.CarBrand" />
+        <mapping class="ru.job4j.model.File" />
     </session-factory>
 </hibernate-configuration>

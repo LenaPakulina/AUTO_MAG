@@ -16,4 +16,10 @@ public interface PostRepository {
     Optional<Post> findById(int id);
 
     Collection<Post> findAll();
+
+    Collection<Post> findPostsToday();
+
+    Collection<Post> findPostsWithPhoto();
+
+    Collection<Post> findPostsOfCarBrand(int brandId);
 }
