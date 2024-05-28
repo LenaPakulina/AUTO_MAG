@@ -24,7 +24,7 @@ public class SimplePostRepository implements PostRepository {
     @Override
     public Post save(Post post) {
         crudRepository.run(session -> session.persist(post));
-        return null;
+        return post;
     }
 
     @Override
@@ -61,8 +61,10 @@ public class SimplePostRepository implements PostRepository {
     public Collection<Post> findPostsWithPhoto() {
         return crudRepository.query("""
             SELECT DISTINCT p 
-            FROM Post p 
-            JOIN File f ON p.id = f.postId
+            FROM Post p
+            JOIN FETCH p.car
+            LEFT JOIN FETCH PriceHistory
+            JOIN FETCH File f ON p.id = f.postId
             ORDER BY p.id ASC
         """, Post.class);
     }

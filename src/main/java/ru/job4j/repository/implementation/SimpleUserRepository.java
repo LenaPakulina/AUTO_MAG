@@ -37,4 +37,20 @@ public class SimpleUserRepository implements UserRepository {
                 )
         );
     }
+
+    @Override
+    public boolean deleteById(int id) {
+        return crudRepository.runWithResult(
+                "DELETE User WHERE id = :fId",
+                Map.of("fId", id)
+        );
+    }
+
+    @Override
+    public boolean deleteAll() {
+        return crudRepository.runWithResult(
+                "DELETE FROM User",
+                Map.of()
+        );
+    }
 }

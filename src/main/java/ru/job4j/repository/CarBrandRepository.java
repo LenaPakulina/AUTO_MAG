@@ -5,16 +5,17 @@ import ru.job4j.model.CarBrand;
 import ru.job4j.model.Engine;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
-public interface EngineRepository {
-    Engine save(Engine engine);
-
-    Optional<Engine> findById(int id);
-
-    Collection<Engine> findAll();
+public interface CarBrandRepository {
+    CarBrand save(CarBrand carBrand);
 
     boolean deleteById(int id);
 
     boolean deleteAll();
+
+    Collection<CarBrand> findAll();
+
+    Optional<CarBrand> findById(int id);
 }

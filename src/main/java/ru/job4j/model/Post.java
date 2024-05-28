@@ -1,9 +1,6 @@
 package ru.job4j.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +13,8 @@ import java.util.List;
 @Table(name = "auto_posts")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@ToString(exclude = {"subscribers", "priceHistories"})
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

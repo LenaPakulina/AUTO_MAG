@@ -17,6 +17,12 @@ public class SimpleEngineRepository implements EngineRepository {
     private final CrudRepository crudRepository;
 
     @Override
+    public Engine save(Engine engine) {
+        crudRepository.run(session -> session.persist(engine));
+        return engine;
+    }
+
+    @Override
     public Optional<Engine> findById(int id) {
         return crudRepository.optional("from Engine WHERE id = :fId",
                 Engine.class,
@@ -26,5 +32,21 @@ public class SimpleEngineRepository implements EngineRepository {
     @Override
     public Collection<Engine> findAll() {
         return crudRepository.query("from Engine ORDER BY id ASC", Engine.class);
+    }
+
+    @Override
+    public boolean deleteById(int id) {
+        return crudRepository.runWithResult(
+                "DELETE Engine WHERE id = :fId",
+                Map.of("fId", id)
+        );
+    }
+
+    @Override
+    public boolean deleteAll() {
+        return crudRepository.runWithResult(
+                "DELETE FROM Engine",
+                Map.of()
+        );
     }
 }

@@ -7,7 +7,13 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface OwnerRepository {
+    Owner save(Owner owner);
+
     Optional<Owner> findById(int id);
 
     Collection<Owner> findAll();
+
+    boolean deleteById(int id);
+
+    boolean deleteAll();
 }
