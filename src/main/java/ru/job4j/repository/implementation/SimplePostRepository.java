@@ -12,6 +12,7 @@ import ru.job4j.repository.PostRepository;
 import ru.job4j.repository.utils.CrudRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -51,10 +52,11 @@ public class SimplePostRepository implements PostRepository {
     }
 
     @Override
-    public Collection<Post> findPostsToday() {
-        return crudRepository.query("from Post p WHERE DATE(p.created) = :fDate",
+    public Collection<Post> findPostForDate(LocalDateTime from, LocalDateTime to) {
+        return crudRepository.query(
+                "from Post p WHERE p.created between :from and :to",
                 Post.class,
-                Map.of("fDate", LocalDate.now()));
+                Map.of("from", from, "to", to));
     }
 
     @Override
@@ -63,7 +65,7 @@ public class SimplePostRepository implements PostRepository {
             SELECT DISTINCT p 
             FROM Post p
             JOIN FETCH p.photos
-            JOIN FETCH p.car c
+            JOIN FETCH p.car
             JOIN FETCH File f ON p.id = f.postId
             ORDER BY p.id ASC
         """, Post.class);
@@ -73,7 +75,7 @@ public class SimplePostRepository implements PostRepository {
     public Collection<Post> findPostsOfCarBrand(int brandId) {
         return crudRepository.query("""
             SELECT DISTINCT p
-            from Post p 
+            from Post p
             JOIN Car c ON p.car.id =  c.id
             WHERE c.brand.id = :fBrandId
             ORDER BY p.id ASC

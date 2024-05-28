@@ -3,6 +3,8 @@ package ru.job4j.repository;
 import ru.job4j.model.Car;
 import ru.job4j.model.Post;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -17,7 +19,7 @@ public interface PostRepository {
 
     Collection<Post> findAll();
 
-    Collection<Post> findPostsToday();
+    Collection<Post> findPostForDate(LocalDateTime from, LocalDateTime to);
 
     Collection<Post> findPostsWithPhoto();
 

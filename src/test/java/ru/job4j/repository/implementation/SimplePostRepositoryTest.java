@@ -23,6 +23,8 @@ class SimplePostRepositoryTest {
     private static CarRepository carRepository;
     private static UserRepository userRepository;
     private static FilesRepository filesRepository;
+    private static CarBrandRepository carBrandRepository;
+    private static EngineRepository engineRepository;
     private static Car lastCar;
     private static User lastUser;
 
@@ -33,17 +35,17 @@ class SimplePostRepositoryTest {
         CrudRepository crudRepository = new CrudRepository(sf);
         repository = new SimplePostRepository(crudRepository);
         carRepository = new SimpleCarRepository(crudRepository);
-        var engineRepository = new SimpleEngineRepository(crudRepository);
-        var carBrandRepository = new SimpleCarBrandRepository(crudRepository);
+        engineRepository = new SimpleEngineRepository(crudRepository);
+        carBrandRepository = new SimpleCarBrandRepository(crudRepository);
         userRepository = new SimpleUserRepository(crudRepository);
         filesRepository = new SimpleFilesRepository(crudRepository);
 
         Engine engine = engineRepository.save(new Engine(0, "Engine1Type"));
-        CarBrand carBrand = carBrandRepository.save(new CarBrand(0, "Brand1"));
+        CarBrand carBrand1 = carBrandRepository.save(new CarBrand(0, "Brand1"));
         lastCar = carRepository.save(
                 Car.builder()
                         .name("Машина")
-                        .brand(carBrand)
+                        .brand(carBrand1)
                         .engine(engine)
                         .build()
         );
@@ -135,6 +137,51 @@ class SimplePostRepositoryTest {
         file2 = filesRepository.save(file2);
         file3 = filesRepository.save(file3);
         Collection<Post> result = repository.findPostsWithPhoto();
+        Collection<Post> expected = List.of(post1, post3);
+        assertThat(result.size()).isEqualTo(expected.size());
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @DisplayName("Найти посты с машиной марки = ?")
+    @Test
+    void whenFindPostsOfCarBrand() {
+        Engine engine = engineRepository.save(new Engine(0, "Engine1Type"));
+        CarBrand carBrand1 = carBrandRepository.save(new CarBrand(0, "Brand1"));
+        CarBrand carBrand2 = carBrandRepository.save(new CarBrand(0, "Brand2"));
+        CarBrand carBrand3 = carBrandRepository.save(new CarBrand(0, "Brand3"));
+        Car car1 = carRepository.save(Car.builder().name("Машина").brand(carBrand1).engine(engine).build());
+        Car car2 = carRepository.save(Car.builder().name("Машина").brand(carBrand2).engine(engine).build());
+        Car car3 = carRepository.save(Car.builder().name("Машина").brand(carBrand3).engine(engine).build());
+        Car car4 = carRepository.save(Car.builder().name("Машина").brand(carBrand1).engine(engine).build());
+        Post post1 = Post.builder().user(lastUser).car(car1).description("desc1").build();
+        Post post2 = Post.builder().user(lastUser).car(car2).description("desc2").build();
+        Post post3 = Post.builder().user(lastUser).car(car3).description("desc3").build();
+        Post post4 = Post.builder().user(lastUser).car(car4).description("desc4").build();
+        post1 = repository.save(post1);
+        post2 = repository.save(post2);
+        post3 = repository.save(post3);
+        post4 = repository.save(post4);
+        Collection<Post> result = repository.findPostsOfCarBrand(carBrand1.getId());
+        Collection<Post> expected = List.of(post1, post4);
+        assertThat(result.size()).isEqualTo(expected.size());
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @DisplayName("Найти посты за сегодня")
+    @Test
+    void whenFindPostsToday() {
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(2);
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        Post post1 = Post.builder().created(today).user(lastUser).car(lastCar).description("desc1").build();
+        Post post2 = Post.builder().created(yesterday).user(lastUser).car(lastCar).description("desc1").build();
+        Post post3 = Post.builder().created(today).user(lastUser).car(lastCar).description("desc1").build();
+        Post post4 = Post.builder().created(lastWeek).user(lastUser).car(lastCar).description("desc1").build();
+        post1 = repository.save(post1);
+        post2 = repository.save(post2);
+        post3 = repository.save(post3);
+        post4 = repository.save(post4);
+        Collection<Post> result = repository.findPostForDate(LocalDateTime.now().minusDays(1), LocalDateTime.now());
         Collection<Post> expected = List.of(post1, post3);
         assertThat(result.size()).isEqualTo(expected.size());
         assertThat(result).isEqualTo(expected);
