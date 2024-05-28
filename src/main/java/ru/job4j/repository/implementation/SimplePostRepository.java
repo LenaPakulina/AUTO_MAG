@@ -62,8 +62,8 @@ public class SimplePostRepository implements PostRepository {
         return crudRepository.query("""
             SELECT DISTINCT p 
             FROM Post p
-            JOIN FETCH p.car
-            LEFT JOIN FETCH PriceHistory
+            JOIN FETCH p.photos
+            JOIN FETCH p.car c
             JOIN FETCH File f ON p.id = f.postId
             ORDER BY p.id ASC
         """, Post.class);

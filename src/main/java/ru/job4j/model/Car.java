@@ -1,6 +1,8 @@
 package ru.job4j.model;
 
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -35,6 +37,7 @@ public class Car {
     private Engine engine;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "car_id")
     private Set<HistoryOwner> ownerHistories = new HashSet<>();
 }

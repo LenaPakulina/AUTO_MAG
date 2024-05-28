@@ -61,6 +61,7 @@ class SimplePostRepositoryTest {
 
     @AfterEach
     void updateStorage() {
+        filesRepository.deleteAll();
         repository.findAll().forEach(item -> repository.deleteById(item.getId()));
     }
 
@@ -117,4 +118,25 @@ class SimplePostRepositoryTest {
         assertThat(repository.findAll().size()).isEqualTo(0);
     }
 
+    @DisplayName("Найти посты с фотографиями")
+    @Test
+    void whenFindPostsWithPhoto() {
+        filesRepository.deleteAll();
+        Post post1 = Post.builder().user(lastUser).car(lastCar).description("desc1").build();
+        Post post2 = Post.builder().user(lastUser).car(lastCar).description("desc2").build();
+        Post post3 = Post.builder().user(lastUser).car(lastCar).description("desc3").build();
+        post1 = repository.save(post1);
+        post2 = repository.save(post2);
+        post3 = repository.save(post3);
+        File file1 = new File(0, "name", "path1", post1.getId());
+        File file2 = new File(0, "name", "path2", post1.getId());
+        File file3 = new File(0, "name", "path3", post3.getId());
+        file1 = filesRepository.save(file1);
+        file2 = filesRepository.save(file2);
+        file3 = filesRepository.save(file3);
+        Collection<Post> result = repository.findPostsWithPhoto();
+        Collection<Post> expected = List.of(post1, post3);
+        assertThat(result.size()).isEqualTo(expected.size());
+        assertThat(result).isEqualTo(expected);
+    }
 }
