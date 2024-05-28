@@ -62,7 +62,7 @@ public class SimplePostRepository implements PostRepository {
         return crudRepository.query("""
             SELECT DISTINCT p 
             FROM Post p 
-            LEFT JOIN File f ON p.id = f.postId
+            JOIN File f ON p.id = f.postId
             ORDER BY p.id ASC
         """, Post.class);
     }
@@ -76,22 +76,5 @@ public class SimplePostRepository implements PostRepository {
             WHERE c.brand.id = :fBrandId
             ORDER BY p.id ASC
         """, Post.class, Map.of("fBrandId", brandId));
-    }
-
-    public static void main(String[] args) {
-        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .configure().build();
-        try {
-            SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-            CrudRepository crudRepository1 = new CrudRepository(sf);
-            SimplePostRepository simplePostRepository = new SimplePostRepository(crudRepository1);
-            System.out.println(simplePostRepository.findPostsToday());
-            System.out.println(simplePostRepository.findPostsWithPhoto());
-            System.out.println(simplePostRepository.findPostsOfCarBrand(10));
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            StandardServiceRegistryBuilder.destroy(registry);
-        }
     }
 }
