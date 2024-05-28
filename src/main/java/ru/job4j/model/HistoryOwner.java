@@ -24,4 +24,12 @@ public class HistoryOwner {
     private LocalDateTime startAt = LocalDateTime.now();
 
     private LocalDateTime endAt = LocalDateTime.now();
+
+    @ManyToOne
+    @JoinColumn(name = "car_id")
+    private Car car;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
 }
